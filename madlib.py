@@ -1,0 +1,17 @@
+print("Give me a name.")
+name1 = input()
+print("Give me a different name?")
+name2 = input()
+print("Activty number 1(present tense)")
+verb1 = input()
+print("Activty number 2(present tense)")
+verb2 = input()
+print("Activty number 3(present tense)")
+verb3 = input()
+print("One adjective please")
+adjective1 = input()
+print("finally one place")
+place = input()
+print(name1 +" and "+ name2 + " like to " + verb1 +"," + " " + verb2 +"," + " " + "and " + verb3 + " " + "in the " + adjective1 + " " + place)
+
+
