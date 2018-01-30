@@ -22,7 +22,8 @@ clock = pygame.time.Clock()
 refresh_rate = 60
 
 #Images
-picture = pygame.image.load('popup.png')
+PICTURE = pygame.image.load('ending.png')
+cloud_pic = pygame.image.load('Meteor.png')
 
 # Colors
 GREEN = (9, 91, 22)
@@ -31,10 +32,7 @@ BLUE = (75, 200, 255)
 YELLOW = (255, 255, 175)
 GREY = (110, 112, 117)
 GREYbLUE = (177, 185, 206)
-
-# Lightning stuff
-lightning_prob = 300 # (higher is less frequent)
-lightning_timer = 0
+RED = (237, 40, 40)
 
 # Make stars #
 stars = []
@@ -55,15 +53,22 @@ for i in range(num_clouds):
     loc = [x, y]
     clouds.append(loc)
 
+daytime = True
+lights_on = False
+
 def draw_cloud(loc):
     x = loc[0]
     y = loc[1]
-    
-    pygame.draw.ellipse(screen, GREY, [x, y + 20, 40 , 40])
-    pygame.draw.ellipse(screen, GREY, [x + 60, y + 20, 40 , 40])
-    pygame.draw.ellipse(screen, GREY, [x + 20, y + 10, 25, 25])
-    pygame.draw.ellipse(screen, GREY, [x + 35, y, 50, 50])
-    pygame.draw.rect(screen, GREY, [x + 20, y + 20, 60, 40])
+
+    if daytime:
+        pygame.draw.ellipse(screen, WHITE, [x, y + 20, 40 , 40])
+        pygame.draw.ellipse(screen, WHITE, [x + 60, y + 20, 40 , 40])
+        pygame.draw.ellipse(screen, WHITE, [x + 20, y + 10, 25, 25])
+        pygame.draw.ellipse(screen, WHITE, [x + 35, y, 50, 50])
+        pygame.draw.rect(screen, WHITE, [x + 20, y + 20, 60, 40])
+
+    else:
+        screen.blit(cloud_pic, (x,y))
 
    
 # Game loop
@@ -74,6 +79,10 @@ while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True     
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                daytime = not daytime
+     # google 'pygame key constants' for more keys
 
     # Game logic
     for c in clouds:
@@ -91,38 +100,49 @@ while not done:
            s[0] = random.randrange(-800, 20)
            s[1] = random.randrange(-1600, 40)
 
-    ''' flash lighting '''
-    if random.randrange(0, 300) == 0:
-        lightning_timer = 5
-        thunder.play()
-    else:
-        lightning_timer -= 1
-    
+   
     # Drawing code\
     ''' sky '''
-    if lightning_timer > 0:
-        screen.fill(PICTURE)
+    if daytime:
+        screen.fill(BLUE)
+
     else:
-        screen.fill(GRAY)
+        screen.blit(PICTURE, (0, 0))
+
 
 
     ''' sun '''
-    pygame.draw.ellipse(screen, YELLOW, [575, 75, 100, 100])
+    if daytime:
+        pygame.draw.ellipse(screen, YELLOW, [575, 75, 100, 100])
+
+    else:
+        pygame.draw.ellipse(screen, RED, [575, 75, 100, 100])
+
 
     ''' clouds '''
-    for c in clouds:
-        draw_cloud(c)
+    if daytime:
+        for c in clouds:
+            draw_cloud(c)
+
+    else:
+       for c in clouds:
+           screen.blit(cloud_pic, (x, y))
+
 
     ''' stars '''
     for s in stars:
-        pygame.draw.ellipse(screen, GREYbLUE, s)
+        pygame.draw.ellipse(screen, YELLOW, s)
 
     ''' grass '''
     pygame.draw.rect(screen, GREEN, [0, 400, 800, 200])
 
     ''' stars '''
-    for s in stars:
-        pygame.draw.ellipse(screen, YELLOW, s)
+    if daytime:
+        for s in stars:
+            pygame.draw.ellipse(screen, YELLOW, s)
+    else:
+        for s in stars:
+            pygame.draw.ellipse(screen, RED, s)
         
     ''' fence '''
     y = 380
